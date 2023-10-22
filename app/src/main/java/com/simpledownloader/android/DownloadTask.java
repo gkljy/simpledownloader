@@ -27,4 +27,11 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
         super.onPostExecute(integer);
     }
 
+    public void pauseDownload() {
+
+    }
+
+    public void cancelDownload() {
+
+    }
 }

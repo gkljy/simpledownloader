@@ -14,6 +14,8 @@ public class DownloadService extends Service {
 
     private DownloadTask downloadTask;
 
+    private String downloadUrl;
+
     private DownloadListener listener = new DownloadListener() {
         @Override
         public void onProgress(int progress) {
@@ -46,20 +48,26 @@ public class DownloadService extends Service {
         return mBinder;
     }
 
-    class DownloadBinder extends Binder {
+    public class DownloadBinder extends Binder {
 
         public void startDownload(String url) {
             if (downloadTask == null) {
+                downloadUrl = url;
                 downloadTask = new DownloadTask(listener);
+                downloadTask.execute(downloadUrl);
             }
         }
 
         public void pauseDownload() {
-
+            if (downloadTask != null) {
+                downloadTask.pauseDownload();
+            }
         }
 
         public void cancelDownload() {
-
+            if (downloadTask != null) {
+                downloadTask.cancelDownload();
+            }
         }
     }
 }
