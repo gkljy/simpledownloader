@@ -5,6 +5,8 @@ import android.os.AsyncTask;
 public class DownloadTask extends AsyncTask<String, Integer, Integer> {
 
     private DownloadListener listener;
+    private boolean isPaused;
+    private boolean isCanceled;
 
     public DownloadTask(DownloadListener listener) {
         this.listener = listener;
@@ -28,10 +30,10 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
     }
 
     public void pauseDownload() {
-
+        isPaused = true;
     }
 
     public void cancelDownload() {
-
+        isCanceled = true;
     }
 }
