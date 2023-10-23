@@ -2,6 +2,7 @@ package com.simpledownloader.android;
 
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,10 +38,11 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
         String downloadUrl = strings[0];
         String fileName = downloadUrl.substring(downloadUrl.lastIndexOf("/"));
         String directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
-        File file = new File(fileName + directory);
+        File file = new File(directory + fileName);
         if (file.exists()) {
             downloadedLength = file.length();
         }
+        Log.d("ckn", "downloadedLength = " + downloadedLength);
         long contentLength = 0;
         try {
             contentLength = getContentLength(downloadUrl);
@@ -69,8 +71,10 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
                         return TYPE_PAUSED;
                     } else {
                         total += len;
+//                        Log.d("ckn", "total = " + total);
                         savedFile.write(b, 0, len);
-                        int progress = (int) ((downloadedLength + total) / contentLength * 100);
+                        int progress = (int) ((downloadedLength + total) * 100 / contentLength);
+//                        Log.d("ckn", "progress = " + progress);
                         publishProgress(progress);
                     }
                 }
@@ -106,6 +110,7 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
         if (response != null && response.isSuccessful()) {
             long contentLength = response.body().contentLength();
             response.close();
+            Log.d("ckn", "contentLength = " + contentLength);
             return contentLength;
         }
         return 0;
@@ -118,6 +123,7 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
         int progress = values[0];
         if (progress > lastProgress) {
             listener.onProgress(progress);
+            lastProgress = progress;
         }
     }
 

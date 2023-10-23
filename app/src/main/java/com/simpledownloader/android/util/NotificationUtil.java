@@ -29,11 +29,11 @@ public class NotificationUtil {
         }
         builder = builder.setContentTitle(title)
                 .setWhen(System.currentTimeMillis())
-                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher))
-                .setContentIntent(pi)
-                .setDefaults(Notification.DEFAULT_SOUND);
+                .setContentIntent(pi);
+//                .setDefaults(Notification.DEFAULT_SOUND);
         if (progress >= 0) {
             builder.setContentText(progress + "%");
             builder.setProgress(100, progress, false);
@@ -43,7 +43,7 @@ public class NotificationUtil {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private static String createNotificationChannel(String channelId, String channelName, NotificationManager manager) {
-        NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT);
+        NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_LOW);
         manager.createNotificationChannel(channel);
         return channelId;
     }

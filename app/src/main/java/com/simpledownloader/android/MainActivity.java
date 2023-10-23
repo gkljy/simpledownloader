@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
         if (v.getId() == R.id.btn_start_download) {
-            String url = "https://dldir1.qq.com/weixin/Windows/WeChatSetup.exe";
+            String url = "https://dldir1.qq.com/weixin/Windows/WeChatSetup_x86.exe";
             downloadBinder.startDownload(url);
         } else if (v.getId() == R.id.btn_pause_download) {
             downloadBinder.pauseDownload();
