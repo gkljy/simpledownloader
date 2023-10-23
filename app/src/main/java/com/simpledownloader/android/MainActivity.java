@@ -1,7 +1,9 @@
 package com.simpledownloader.android;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -11,6 +13,8 @@ import android.view.View;
 import android.widget.Button;
 
 import com.simpledownloader.android.service.DownloadService;
+import com.simpledownloader.android.util.PermissionUtil;
+import com.simpledownloader.android.util.ToastUtil;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -27,6 +31,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     };
 
+    private static String[] PERMISSIONS = new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent = new Intent(this, DownloadService.class);
         startService(intent);
         bindService(intent, connection, BIND_AUTO_CREATE);
+        PermissionUtil.checkPermission(this, PERMISSIONS, 1);
     }
 
     @Override
@@ -48,12 +57,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
         if (v.getId() == R.id.btn_start_download) {
-            String url = "";
+            String url = "https://dldir1.qq.com/weixin/Windows/WeChatSetup.exe";
             downloadBinder.startDownload(url);
         } else if (v.getId() == R.id.btn_pause_download) {
             downloadBinder.pauseDownload();
         } else if (v.getId() == R.id.btn_cancel_download) {
             downloadBinder.cancelDownload();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1) {
+            if (!PermissionUtil.checkGrant(grantResults)) {
+                ToastUtil.show(this, "无权限");
+            }
         }
     }
 }

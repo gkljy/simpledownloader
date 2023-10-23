@@ -1,6 +1,7 @@
 package com.simpledownloader.android.service;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
@@ -25,27 +26,42 @@ public class DownloadService extends Service {
     private DownloadListener listener = new DownloadListener() {
         @Override
         public void onProgress(int progress) {
-
+            Notification notification = NotificationUtil.createNotification(DownloadService.this, "Downloading", progress);
+            NotificationManager manager = NotificationUtil.getNotificationManager(DownloadService.this);
+            manager.notify(1, notification);
         }
 
         @Override
         public void onSuccess() {
-
+            downloadTask = null;
+            stopForeground(true);
+            Notification notification = NotificationUtil.createNotification(DownloadService.this, "Download Success", -1);
+            NotificationManager manager = NotificationUtil.getNotificationManager(DownloadService.this);
+            manager.notify(1, notification);
+            ToastUtil.show(DownloadService.this, "Download Success");
         }
 
         @Override
         public void onFailed() {
-
+            downloadTask = null;
+            stopForeground(true);
+            Notification notification = NotificationUtil.createNotification(DownloadService.this, "Download Failed", -1);
+            NotificationManager manager = NotificationUtil.getNotificationManager(DownloadService.this);
+            manager.notify(1, notification);
+            ToastUtil.show(DownloadService.this, "Download Failed");
         }
 
         @Override
         public void onPaused() {
-
+            downloadTask = null;
+            ToastUtil.show(DownloadService.this, "Download Paused");
         }
 
         @Override
         public void onCanceled() {
-
+            downloadTask = null;
+            stopForeground(true);
+            ToastUtil.show(DownloadService.this, "Download Canceled");
         }
     };
 

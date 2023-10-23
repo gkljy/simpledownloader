@@ -20,8 +20,10 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
     public static final int TYPE_CANCELED = 3;
 
     private DownloadListener listener;
-    private boolean isPaused;
-    private boolean isCanceled;
+    private boolean isPaused = false;
+    private boolean isCanceled = false;
+
+    private int lastProgress;
 
     public DownloadTask(DownloadListener listener) {
         this.listener = listener;
@@ -113,12 +115,30 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
     @Override
     protected void onProgressUpdate(Integer... values) {
         super.onProgressUpdate(values);
+        int progress = values[0];
+        if (progress > lastProgress) {
+            listener.onProgress(progress);
+        }
     }
 
 
     @Override
     protected void onPostExecute(Integer integer) {
         super.onPostExecute(integer);
+        switch (integer) {
+            case TYPE_SUCCESS:
+                listener.onSuccess();
+                break;
+            case TYPE_FAILED:
+                listener.onFailed();
+                break;
+            case TYPE_PAUSED:
+                listener.onPaused();
+                break;
+            case TYPE_CANCELED:
+                listener.onCanceled();
+                break;
+        }
     }
 
     public void pauseDownload() {
